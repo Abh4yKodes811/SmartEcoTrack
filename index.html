@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart EcoTrack</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-mark">E</span><span>Smart EcoTrack</span></a>
+    <div id="headerUser" class="header-user hidden">
+      <span id="userEmail"></span>
+      <button id="logoutBtn" class="button button-outline" type="button">Log out</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="authView" class="auth-layout">
+      <div class="auth-intro">
+        <p class="eyebrow">PERSONAL ENERGY TRACKER</p>
+        <h1>Understand your energy. Reduce your footprint.</h1>
+        <p class="muted">Record electricity usage, estimate carbon emissions, and keep your energy history in one place.</p>
+        <ul class="intro-list">
+          <li>Track electricity use in kWh</li>
+          <li>Estimate carbon emissions</li>
+          <li>Save records in an SQLite database</li>
+        </ul>
+      </div>
+      <div class="panel auth-panel">
+        <div class="auth-tabs">
+          <button id="loginTab" class="tab active" type="button">Log in</button>
+          <button id="registerTab" class="tab" type="button">Create account</button>
+        </div>
+        <form id="authForm">
+          <label for="email">Email address</label>
+          <input id="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" minlength="6" placeholder="At least 6 characters" required>
+          <button id="authSubmit" class="button button-primary full-width" type="submit">Log in</button>
+          <p id="authMessage" class="form-message" role="status"></p>
+        </form>
+        <p class="tiny muted">Create an account to keep your energy records separate from other users.</p>
+      </div>
+    </section>
+
+    <section id="appView" class="hidden">
+      <div class="welcome-row">
+        <p class="eyebrow">YOUR OVERVIEW</p>
+        <h1>Energy dashboard</h1>
+        <p class="muted">Enter a bill or usage reading to update your personal report.</p>
+      </div>
+      <section class="summary-grid">
+        <article class="metric-card"><p class="metric-label">Total recorded energy</p><div class="metric-value"><span id="totalEnergy">0.0</span> <small>kWh</small></div></article>
+        <article class="metric-card"><p class="metric-label">Solar energy entered</p><div class="metric-value"><span id="totalSolar">0.0</span> <small>kWh</small></div></article>
+        <article class="metric-card"><p class="metric-label">Estimated emissions</p><div class="metric-value"><span id="totalCarbon">0.0</span> <small>kg CO₂e</small></div></article>
+        <article class="metric-card"><p class="metric-label">Average solar share</p><div class="metric-value"><span id="solarShare">0</span><small>%</small></div></article>
+      </section>
+
+      <section class="main-grid">
+        <article class="panel">
+          <div class="panel-heading"><div><h2>Add an energy record</h2><p class="muted">Use the units from your electricity bill or meter.</p></div></div>
+          <form id="recordForm" class="record-form">
+            <label for="recordDate">Record date</label>
+            <input id="recordDate" type="date" required>
+            <label for="period">Period</label>
+            <select id="period" required><option value="Daily">Daily</option><option value="Monthly" selected>Monthly bill</option></select>
+            <label for="energyInput">Electricity consumed (kWh)</label>
+            <input id="energyInput" type="number" min="0.01" step="0.01" placeholder="e.g. 180" required>
+            <label for="solarInput">Solar energy used (kWh, optional)</label>
+            <input id="solarInput" type="number" min="0" step="0.01" value="0" required>
+            <p class="hint">Solar energy cannot be greater than the total electricity consumed for this record.</p>
+            <div class="estimate-box"><span>Estimated carbon emissions</span><strong><span id="previewCarbon">0.00</span> kg CO₂e</strong></div>
+            <button id="saveRecordBtn" class="button button-primary full-width" type="submit">Save record</button>
+            <p id="recordMessage" class="form-message" role="status"></p>
+          </form>
+        </article>
+        <article class="panel">
+          <div class="panel-heading"><div><h2>Your energy history</h2><p class="muted">Your saved records from SQLite.</p></div></div>
+          <div class="chart-wrap"><canvas id="energyChart" aria-label="Energy history chart"></canvas></div>
+          <p class="tiny muted">Chart shows up to the latest 7 saved records.</p>
+        </article>
+      </section>
+
+      <section class="panel history-panel">
+        <div class="panel-heading history-heading"><div><h2>Saved records</h2><p class="muted">Only records belonging to your signed-in account are shown.</p></div><input id="historySearch" type="search" placeholder="Search records..." aria-label="Search records"></div>
+        <div class="table-wrap"><table><thead><tr><th>Date</th><th>Period</th><th>Consumed</th><th>Solar</th><th>Estimated CO₂e</th><th>Action</th></tr></thead><tbody id="recordRows"></tbody></table></div>
+        <p id="noRecords" class="muted empty">No records yet. Add your first energy record above.</p>
+      </section>
+      <p class="disclaimer">Emission estimates use an example factor of 0.82 kg CO₂e/kWh. Actual emissions vary by location and electricity source. This application records user-entered data; it does not connect to a physical meter.</p>
+    </section>
+    <footer>Smart EcoTrack · HTML, CSS, JavaScript, Flask and SQLite</footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
